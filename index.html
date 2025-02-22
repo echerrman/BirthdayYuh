@@ -63,8 +63,6 @@
             font-size: 16px;
         }
 
-
-
         button:hover {
             background-color: lime;
         }
@@ -73,7 +71,7 @@
 </head>
 
 <body>
-    <h1 class="glitch">Access Granted</h1>
+    <h3 class="glitch">Access Granted</h3>
     <div id="terminal"></div>
     <div id="button-container">
         <button onclick="confettiExplosion()">🎉 Click for More Confetti! 🎉</button>
@@ -124,50 +122,49 @@
         ];
 
         // Configuration variables
-        const typingDelay = 10;
-        const lineDelay = 800;
-        const glitchProbability = 0.8;
-        const glitchDuration = 20;
+        const typingDelay = 30;
+        const glitchCyclesMin = 5;
+        const glitchCyclesMax = 30;
+        const glitchChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        // Function to get a random glitch character
         function getRandomGlitchChar() {
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            return chars.charAt(Math.floor(Math.random() * chars.length));
+            return glitchChars.charAt(Math.floor(Math.random() * glitchChars.length));
         }
 
-        // Function to type a single line character by character
-        function typeLine(line, charIndex, callback) {
-            if (charIndex < line.length) {
-                const char = line.charAt(charIndex);
-                // Check if the character should glitch (avoid spaces)
-                if (char !== " " && Math.random() < glitchProbability) {
-                    // Temporarily print a random glitch character
-                    const glitchChar = getRandomGlitchChar();
-                    terminal.innerHTML += glitchChar;
-                    // After a short delay, replace it with the actual character
-                    setTimeout(() => {
-                        terminal.innerHTML = terminal.innerHTML.slice(0, -1) + char;
-                        setTimeout(() => typeLine(line, charIndex + 1, callback), typingDelay);
-                    }, glitchDuration);
-                } else {
-                    terminal.innerHTML += char;
-                    setTimeout(() => typeLine(line, charIndex + 1, callback), typingDelay);
-                }
+        function glitchCharEffect(span, targetChar, cyclesLeft) {
+            if (cyclesLeft > 0) {
+                span.textContent = getRandomGlitchChar();
+                setTimeout(() => glitchCharEffect(span, targetChar, cyclesLeft - 1), typingDelay / 2);
             } else {
-                // End of line: add a line break and then call the callback
-                terminal.innerHTML += "<br>";
-                callback();
+                span.textContent = targetChar;
             }
         }
 
-        // Function to iterate through messages array and type each line
-        function typeMessages(messageIndex) {
-            if (messageIndex < messages.length) {
-                typeLine(messages[messageIndex], 0, () => {
-                    setTimeout(() => typeMessages(messageIndex + 1), lineDelay);
-                });
+        function typeLine(line, callback) {
+            let lineContainer = document.createElement("div");
+            terminal.appendChild(lineContainer);
+            let index = 0;
+
+            function nextChar() {
+                if (index < line.length) {
+                    let span = document.createElement("span");
+                    lineContainer.appendChild(span);
+                    let cycles = Math.floor(Math.random() * (glitchCyclesMax - glitchCyclesMin + 1)) + glitchCyclesMin;
+                    glitchCharEffect(span, line[index], cycles);
+                    index++;
+                    setTimeout(nextChar, typingDelay);
+                } else {
+                    lineContainer.appendChild(document.createElement("br"));
+                    setTimeout(callback, 500);
+                }
+            }
+            nextChar();
+        }
+
+        function typeMessages(index) {
+            if (index < messages.length) {
+                typeLine(messages[index], () => typeMessages(index + 1));
             } else {
-                // After all messages, add a blinking cursor
                 terminal.innerHTML += "<br>> <span class='blink'>_</span>";
             }
         }
@@ -194,7 +191,6 @@
         // Launch confetti explosion when the message is fully revealed
         setTimeout(confettiExplosion, 4000);
 
-        // Start the terminal sequence after a short delay
         setTimeout(() => typeMessages(0), 500);
     </script>
 </body>
