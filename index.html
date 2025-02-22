@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hacker Terminal Birthday Wish</title>
+    <!-- You can embed CSS here or link to an external styles.css -->
+    <style>
+        /* Basic styling for a hacker terminal look */
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            margin: 0;
+        }
+
+        #terminal {
+            white-space: pre-wrap;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .blink {
+            animation: blink 1s infinite alternate;
+        }
+
+        @keyframes blink {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        #button-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+
+        #activate-windows {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            color: rgba(211, 211, 211, 0.7);
+            /* Light grey */
+            font-family: Arial, sans-serif;
+            text-align: left;
+            z-index: 100;
+        }
+
+        #activate-windows .large-text {
+            font-size: 20px;
+        }
+
+        #activate-windows .small-text {
+            font-size: 16px;
+        }
+
+
+
+        button:hover {
+            background-color: lime;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+    <h1 class="glitch">Access Granted</h1>
+    <div id="terminal"></div>
+    <div id="button-container">
+        <button onclick="confettiExplosion()">🎉 Click for More Confetti! 🎉</button>
+    </div>
+    <div id="activate-windows">
+        <div class="large-text">Activate Windows</div>
+        <div class="small-text">Go to Settings to activate Windows.</div>
+    </div>
+
+
+    <!-- JavaScript can be embedded here or loaded from an external script.js -->
+    <script>
+        // Select the terminal element
+        const terminal = document.getElementById("terminal");
+
+        // Array of messages to simulate the hacking process
+        const cakeArt2 = `
+        i  i  i  i  i 
+      ~~~~~~~~~~~~~~~~~
+     |      HAPPY      |
+     |     BIRTHDAY!   |
+     |~~~~~~~~~~~~~~~~~|
+     |      CAKE       |
+     |_________________|
+     (_________________)
+`;
+
+        const messages = [
+            "Initializing secure connection to Jonathan's system...",
+            "Establishing encrypted tunnel... [OK]",
+            "Bypassing advanced quantum firewalls... [OK]",
+            "Accessing classified birthday archives...",
+            "Injecting custom payload: 'BIRTHDAY OVERRIDE'...",
+            "Decrypting top secret payload...",
+            "Progress: [██░░░░░░░░] 20% complete...",
+            "Progress: [████░░░░░░] 38% complete...",
+            "Progress: [███████░░░] 65% complete...",
+            "Progress: [█████████░] 82% complete...",
+            "Progress: [██████████] 100% complete... [Complete]",
+            ">>> SYSTEM OVERRIDE: Birthday Mode Activated <<<",
+            "Analyzing target: Jonathan Maenche... [TARGET LOCKED]",
+            "Executing birthday protocol...",
+            cakeArt2,
+            "Rendering personalized message...",
+            "Happy Birthday, Jonathan! May your code compile without errors,",
+            "and may your bugs be forever elusive. Enjoy your day, Code Warrior!",
+            ">> End of transmission. <<"
+        ];
+
+        // Configuration variables
+        const typingDelay = 10;
+        const lineDelay = 800;
+        const glitchProbability = 0.8;
+        const glitchDuration = 20;
+
+        // Function to get a random glitch character
+        function getRandomGlitchChar() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            return chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        // Function to type a single line character by character
+        function typeLine(line, charIndex, callback) {
+            if (charIndex < line.length) {
+                const char = line.charAt(charIndex);
+                // Check if the character should glitch (avoid spaces)
+                if (char !== " " && Math.random() < glitchProbability) {
+                    // Temporarily print a random glitch character
+                    const glitchChar = getRandomGlitchChar();
+                    terminal.innerHTML += glitchChar;
+                    // After a short delay, replace it with the actual character
+                    setTimeout(() => {
+                        terminal.innerHTML = terminal.innerHTML.slice(0, -1) + char;
+                        setTimeout(() => typeLine(line, charIndex + 1, callback), typingDelay);
+                    }, glitchDuration);
+                } else {
+                    terminal.innerHTML += char;
+                    setTimeout(() => typeLine(line, charIndex + 1, callback), typingDelay);
+                }
+            } else {
+                // End of line: add a line break and then call the callback
+                terminal.innerHTML += "<br>";
+                callback();
+            }
+        }
+
+        // Function to iterate through messages array and type each line
+        function typeMessages(messageIndex) {
+            if (messageIndex < messages.length) {
+                typeLine(messages[messageIndex], 0, () => {
+                    setTimeout(() => typeMessages(messageIndex + 1), lineDelay);
+                });
+            } else {
+                // After all messages, add a blinking cursor
+                terminal.innerHTML += "<br>> <span class='blink'>_</span>";
+            }
+        }
+
+        function confettiExplosion() {
+            let count = 200;
+            let defaults = { origin: { y: 0.7 } };
+
+            function fire(particleRatio, opts) {
+                confetti(
+                    Object.assign({}, defaults, opts, {
+                        particleCount: Math.floor(count * particleRatio),
+                    })
+                );
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55 });
+            fire(0.2, { spread: 60 });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.2, { spread: 120, startVelocity: 45 });
+        }
+
+        // Launch confetti explosion when the message is fully revealed
+        setTimeout(confettiExplosion, 4000);
+
+        // Start the terminal sequence after a short delay
+        setTimeout(() => typeMessages(0), 500);
+    </script>
+</body>
+
+</html>
